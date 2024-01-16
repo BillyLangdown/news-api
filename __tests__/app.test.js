@@ -4,7 +4,6 @@ const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
 const endpointsData = require("../endpoints.json");
-const { response } = require("express");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -33,10 +32,7 @@ describe("get/api/topics", () => {
 });
 
 describe("get/api", () => {
-  test("Should give a status 200.", () => {
-    return request(app).get("/api").expect(200);
-  });
-  test("Should return an the correct JSON file.", () => {
+  test("GET:200 Should return an the correct JSON file.", () => {
     return request(app)
       .get("/api")
       .then(({ _body }) => {
@@ -45,24 +41,44 @@ describe("get/api", () => {
   });
 });
 
-describe("get/articles/id", () => {
-  test("should give a status 200", () => {
-    return request(app).get("/api/articles/1").expect(200);
-  });
-  test("Should return correct article when given an id.", () => {
+describe("get/api/articles/:id", () => {
+  test("GET:200 Should return correct article when given an id.", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
         expect(body[0].article_id).toBe(1);
+        expect(body[0].hasOwnProperty);
       });
   });
   test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
     return request(app)
-      .get("/api/articles/9999")
+      .get("/api/articles/not-an-id")
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("get/api/articles", () => {
+  test("GET:200 Should an array of object containing article data", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0]).toMatchObject({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T14:12:00.000Z",
+          votes: 0,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: "2",
+        });
       });
   });
 });

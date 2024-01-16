@@ -12,7 +12,7 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
-  "GET /api/articles": {
+  "GET/api/articles": {
     "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
@@ -43,6 +43,36 @@
         "votes": 100,
         "article_img_url":" https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
+    ]
+    
+  },
+  "GET /api/articles": {
+    "description": "serves an array with all article objects with additional comment count property",
+    "queries": [],
+    "exampleResponse":   [
+      {
+        "article_id": "3",
+        "title": "'Eight pug gifs that remind me of mitch'",
+        "topic": "'mitch'",
+        "author": "icellusedkars'",
+        "body": "some gifs'",
+        "created_at": "2020-11-03T14:12:00.000Z",
+        "votes": "0",
+        "article_img_url": "'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'",
+        "comment_count": "2"
+      },
+      {
+        "article_id": 6,
+        "title": "'A'",
+        "topic": "'mitch'",
+        "author": "'icellusedkars'",
+        "body": "'Delicious tin of cat food",
+        "created_at": "2020-10-18T07:00:00.000Z",
+        "votes": 0,
+        "article_img_url": "'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'",
+        "comment_count": "'1'"
+      }
+      
     ]
     
   }
