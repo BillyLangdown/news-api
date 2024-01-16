@@ -3,9 +3,17 @@ const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
+const endpointsData = require("../endpoints.json");
+const { response } = require("express");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
+
+describe("404", () => {
+  test("Should return 404 if not given a valid endpoint", () => {
+    return request(app).get("/api/wrong").expect(404);
+  });
+});
 
 describe("get/api/topics", () => {
   test("Should give a status 200", () => {
@@ -22,21 +30,39 @@ describe("get/api/topics", () => {
         expect(body[0].hasOwnProperty("description")).toBe(true);
       });
   });
-  test("Should return 404 if not exactly /topics is given", () => {
-    return request(app).get("/api/wrong").expect(404);
-  });
 });
 
-describe.only("get/api", () => {
+describe("get/api", () => {
   test("Should give a status 200.", () => {
     return request(app).get("/api").expect(200);
   });
-  test("Should return an object.", () => {
+  test("Should return an the correct JSON file.", () => {
     return request(app)
       .get("/api")
       .then(({ _body }) => {
-        expect(typeof _body).toBe("object");
-        expect(_body.hasOwnProperty("GET /api")).toBe(true);
+        expect(_body).toEqual(endpointsData);
+      });
+  });
+});
+
+describe("get/articles/id", () => {
+  test("should give a status 200", () => {
+    return request(app).get("/api/articles/1").expect(200);
+  });
+  test("Should return correct article when given an id.", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0].article_id).toBe(1);
+      });
+  });
+  test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
       });
   });
 });
