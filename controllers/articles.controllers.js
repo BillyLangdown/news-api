@@ -1,7 +1,7 @@
-const { response } = require("../app");
 const {
   fetchArticleById,
   fetchArticles,
+  fetchArticleCommentsById,
 } = require("../models/articles.models");
 
 exports.getArticleById = (req, res, next) => {

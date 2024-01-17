@@ -67,6 +67,19 @@ describe("get/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
+        expect(
+          body.forEach((article) => {
+            article.hasOwnProperty("article_id"),
+              article.hasOwnProperty("title"),
+              article.hasOwnProperty("topic"),
+              article.hasOwnProperty("author"),
+              article.hasOwnProperty("body"),
+              article.hasOwnProperty("created_at"),
+              article.hasOwnProperty("votes"),
+              article.hasOwnProperty("article_img_url"),
+              article.hasOwnProperty("comment_count");
+          })
+        );
         expect(body[0]).toMatchObject({
           article_id: 3,
           title: "Eight pug gifs that remind me of mitch",
@@ -79,6 +92,35 @@ describe("get/api/articles", () => {
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           comment_count: "2",
         });
+      });
+  });
+});
+
+describe.only("get/api/articles/:article_id/comments", () => {
+  test("GET:200, Should respond with an array of comments for given article id.", () => {
+    return request(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(
+          body.forEach((comment) => {
+            comment.hasOwnProperty("comment_id"),
+              comment.hasOwnProperty("votes"),
+              comment.hasOwnProperty("created_at"),
+              comment.hasOwnProperty("author"),
+              comment.hasOwnProperty("body"),
+              comment.hasOwnProperty("article_id");
+          })
+        );
+      });
+  });
+  test("GET:400, Should respond with bad request if non-number id is given.", () => {
+    return request(app)
+      .get("/api/articles/:banana/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });
