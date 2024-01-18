@@ -10,6 +10,7 @@ const {
 const {
   getCommentsByArticleId,
   postCommentOnArticle,
+  deleteCommentById,
 } = require("./controllers/comments.controllers");
 
 app.use(express.json());
@@ -28,7 +29,10 @@ app.post("/api/articles/:article_id/comments", postCommentOnArticle);
 
 app.patch("/api/articles/:article_id", patchArticleById);
 
+app.delete("/api/comments/:comment_id", deleteCommentById);
+
 app.use((err, req, res, next) => {
+  console.log(err);
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else if (err.thrown) {
