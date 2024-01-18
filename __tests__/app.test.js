@@ -135,12 +135,14 @@ describe("post/api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then(({ body }) => {
-        expect(body[0]).hasOwnProperty("body");
-        expect(body[0]).hasOwnProperty("author");
-        expect(body[0]).hasOwnProperty("article_id");
+        body.forEach((comment) => {
+          expect(comment).hasOwnProperty("body");
+          expect(comment).hasOwnProperty("author");
+          expect(comment).hasOwnProperty("article_id");
+        });
       });
   });
-  test("POST:404 should respond with correct msg for invalid id", () => {
+  test("POST:404 should respond with correct msg for un-found id", () => {
     const newComment = {
       body: "This is the new comment on article 9",
       author: "butter_bridge",
@@ -153,7 +155,7 @@ describe("post/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Not found");
       });
   });
-  test("POST:404 should respond with correct msg for invalid id", () => {
+  test("POST:404 should respond with correct msg for un-found author", () => {
     const newComment = {
       body: "This is the new comment on article 9",
       author: "Not a Username",
@@ -173,6 +175,45 @@ describe("post/api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("Patch/api/articles/:article_id", () => {
+  test("PATCH:200 update article and respond with updated article incremented by 1", () => {
+    const newVote = { inc_votes: -50 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(newVote)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0]).hasOwnProperty("article_img_url");
+        expect(body[0]).hasOwnProperty("author");
+        expect(body[0]).hasOwnProperty("body");
+        expect(body[0]).hasOwnProperty("created_at");
+        expect(body[0]).hasOwnProperty("title");
+        expect(body[0]).hasOwnProperty("topic");
+        expect(body[0].votes).toBe(50);
+      });
+  });
+  test("POST:404 should respond with correct msg for un-found id", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/999")
+      .send(newVote)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("POST:400 should respond with correct msg if no body is given", () => {
+    return request(app)
+      .patch("/api/articles/999")
+      .send()
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
       });
   });
 });
