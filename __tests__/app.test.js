@@ -96,13 +96,12 @@ describe("get/api/articles", () => {
   });
 });
 
-describe.only("get/api/articles/:article_id/comments", () => {
+describe("get/api/articles/:article_id/comments", () => {
   test("GET:200, Should respond with an array of comments for given article id.", () => {
     return request(app)
       .get("/api/articles/9/comments")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(
           body.forEach((comment) => {
             comment.hasOwnProperty("comment_id"),
@@ -118,6 +117,59 @@ describe.only("get/api/articles/:article_id/comments", () => {
   test("GET:400, Should respond with bad request if non-number id is given.", () => {
     return request(app)
       .get("/api/articles/:banana/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("post/api/articles/:article_id/comments", () => {
+  test("POST: 201 should post a comment object to corresponding article using id and respond with that object", () => {
+    const newComment = {
+      body: "This is the new comment on article 9",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body[0]).hasOwnProperty("body");
+        expect(body[0]).hasOwnProperty("author");
+        expect(body[0]).hasOwnProperty("article_id");
+      });
+  });
+  test("POST:404 should respond with correct msg for invalid id", () => {
+    const newComment = {
+      body: "This is the new comment on article 9",
+      author: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("POST:404 should respond with correct msg for invalid id", () => {
+    const newComment = {
+      body: "This is the new comment on article 9",
+      author: "Not a Username",
+    };
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("POST:400 should respond with correct msg for post with no body", () => {
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send()
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
