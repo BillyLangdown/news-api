@@ -13,6 +13,8 @@ const {
   deleteCommentById,
 } = require("./controllers/comments.controllers");
 
+const { getUsers } = require("./controllers/users.controllers");
+
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
@@ -31,8 +33,9 @@ app.patch("/api/articles/:article_id", patchArticleById);
 
 app.delete("/api/comments/:comment_id", deleteCommentById);
 
+app.get("/api/users", getUsers);
+
 app.use((err, req, res, next) => {
-  console.log(err);
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else if (err.thrown) {
