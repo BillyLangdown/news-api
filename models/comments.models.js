@@ -13,7 +13,6 @@ exports.fetchCommentsByArticleId = (article_id) => {
           msg: `No user found for user_id: ${user_id}`,
         });
       }
-
       return rows;
     });
 };
@@ -32,7 +31,6 @@ exports.insertCommentOnArticle = (newComment, article_id) => {
           msg: "Bad request",
         });
       }
-
       return rows;
     });
 };
