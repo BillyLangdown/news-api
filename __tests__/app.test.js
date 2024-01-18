@@ -209,11 +209,23 @@ describe("Patch/api/articles/:article_id", () => {
   });
   test("POST:400 should respond with correct msg if no body is given", () => {
     return request(app)
-      .patch("/api/articles/999")
+      .patch("/api/articles/9")
       .send()
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
+        expect(body.msg).toBe("Bad request");
       });
+  });
+});
+
+describe.only("delete/api/comments/:comment_id", () => {
+  test("DELETE:204 should give no response and delete comment with given id ", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("DELETE:404 should give correct msg if id is un-found ", () => {
+    return request(app).delete("/api/comments/999").expect(404);
+  });
+  test("DELETE:400 should give correct msg if id is invalid ", () => {
+    return request(app).delete("/api/comments/donkey").expect(400);
   });
 });
