@@ -17,3 +17,22 @@ exports.fetchCommentsByArticleId = (article_id) => {
       return rows;
     });
 };
+
+exports.insertCommentOnArticle = (newComment, article_id) => {
+  const { author, body } = newComment;
+  return db
+    .query(
+      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [author, body, article_id]
+    )
+    .then(({ rows }) => {
+      if (rows === 0) {
+        return Promise.reject({
+          status: 400,
+          msg: "Bad request",
+        });
+      }
+
+      return rows;
+    });
+};
