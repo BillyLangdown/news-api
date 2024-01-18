@@ -218,7 +218,7 @@ describe("Patch/api/articles/:article_id", () => {
   });
 });
 
-describe.only("delete/api/comments/:comment_id", () => {
+describe("delete/api/comments/:comment_id", () => {
   test("DELETE:204 should give no response and delete comment with given id ", () => {
     return request(app).delete("/api/comments/1").expect(204);
   });
@@ -227,5 +227,44 @@ describe.only("delete/api/comments/:comment_id", () => {
   });
   test("DELETE:400 should give correct msg if id is invalid ", () => {
     return request(app).delete("/api/comments/donkey").expect(400);
+  });
+});
+
+describe("get/api/users", () => {
+  test("GET:200 should return all users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toMatchObject([
+          {
+            username: "butter_bridge",
+            name: "jonny",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          },
+          {
+            username: "icellusedkars",
+            name: "sam",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          },
+          {
+            username: "rogersop",
+            name: "paul",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+          },
+          {
+            username: "lurker",
+            name: "do_nothing",
+            avatar_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          },
+        ]);
+      });
+  });
+  test("GET:404 should return not found when given a route that does not exist ", () => {
+    return request(app).get("/api/this-is-not-a-route").expect(404);
   });
 });
