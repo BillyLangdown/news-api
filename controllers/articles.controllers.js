@@ -14,7 +14,8 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
+  const { topic } = req.query;
+  fetchArticles(topic)
     .then((response) => {
       res.status(200).send(response);
     })

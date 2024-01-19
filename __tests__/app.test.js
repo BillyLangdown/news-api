@@ -268,3 +268,26 @@ describe("get/api/users", () => {
     return request(app).get("/api/this-is-not-a-route").expect(404);
   });
 });
+
+describe("get/api/articles(topic query)", () => {
+  test("GET:200 should respond with articles with topic of cats", () => {
+    return request(app)
+      .get("/api/articles")
+      .query({ topic: "cats" })
+      .expect(200)
+      .then(({ body }) => {
+        expect(
+          body.forEach((article) => {
+            article.hasOwnProperty("article_id");
+            article.hasOwnProperty("title");
+            article.hasOwnProperty("author");
+            article.hasOwnProperty("body");
+            article.hasOwnProperty("created_at");
+            article.hasOwnProperty("votes");
+            article.hasOwnProperty("article_img_url");
+            article.topic === "cats";
+          })
+        );
+      });
+  });
+});
