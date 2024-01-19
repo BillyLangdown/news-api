@@ -291,3 +291,21 @@ describe("get/api/articles(topic query)", () => {
       });
   });
 });
+
+describe("get/api/articles/:article_id(comment_count)", () => {
+  test("GET:200 should respond with an article with corresponding article_id as well as a comment_count", () => {
+    return request(app)
+      .get("/api/articles/9")
+      .expect(200)
+      .then(({ body }) => {
+        body[0].hasOwnProperty("article_id");
+        body[0].hasOwnProperty("title");
+        body[0].hasOwnProperty("author");
+        body[0].hasOwnProperty("body");
+        body[0].hasOwnProperty("created_at");
+        body[0].hasOwnProperty("votes");
+        body[0].hasOwnProperty("article_img_url");
+        expect(body[0].comment_count).toBe("2");
+      });
+  });
+});

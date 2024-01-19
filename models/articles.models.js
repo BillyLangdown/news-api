@@ -2,7 +2,14 @@ const db = require("../db/connection");
 
 exports.fetchArticleById = (article_id) => {
   return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .query(
+      `SELECT articles.*, COUNT(comments.article_id) AS comment_count 
+      FROM articles
+      JOIN comments ON articles.article_id = comments.article_id
+      WHERE articles.article_id = $1
+      GROUP BY articles.article_id`,
+      [article_id]
+    )
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
@@ -23,7 +30,7 @@ exports.fetchArticles = (topic) => {
       JOIN comments ON articles.article_id = comments.article_id
       WHERE topic = $1
       GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`,
+      ORDER BY articles.created_at DESC;`,
         [topic]
       )
       .then(({ rows }) => {
