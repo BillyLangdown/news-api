@@ -14,7 +14,22 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (topic) => {
+  if (topic) {
+    return db
+      .query(
+        `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+      FROM articles
+      JOIN comments ON articles.article_id = comments.article_id
+      WHERE topic = $1
+      GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC;`,
+        [topic]
+      )
+      .then(({ rows }) => {
+        return rows;
+      });
+  }
   return db
     .query(
       `SELECT articles.*, COUNT(comments.article_id) AS comment_count
