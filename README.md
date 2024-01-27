@@ -1,6 +1,6 @@
 # Northcoders News API
 
---> https://nc-news-api-vw2o.onrender.com/api <-- 
+--> https://nc-news-api-vw2o.onrender.com/api 
 
 
 In this project, I built an API that interacts with application data programmatically. In a future repo, I will use this API to provide information for my front-end architecture.
