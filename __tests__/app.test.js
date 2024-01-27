@@ -15,18 +15,16 @@ describe("404", () => {
 });
 
 describe("get/api/topics", () => {
-  test("Should give a status 200", () => {
-    return request(app).get("/api/topics").expect(200);
-  });
-  test("An array of objects is returned", () => {
+  test("GET:200 An array of objects is returned", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(3);
-        expect(body[0].hasOwnProperty("slug")).toBe(true);
-        expect(body[0].hasOwnProperty("description")).toBe(true);
+        const { topics } = body;
+        expect(Array.isArray(topics)).toBe(true);
+        expect(topics.length).toBe(3);
+        expect(topics[0].hasOwnProperty("slug")).toBe(true);
+        expect(topics[0].hasOwnProperty("description")).toBe(true);
       });
   });
 });
@@ -47,8 +45,9 @@ describe("get/api/articles/:id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body[0].article_id).toBe(1);
-        expect(body[0].hasOwnProperty);
+        const { article } = body;
+        expect(article[0].article_id).toBe(1);
+        expect(article[0].hasOwnProperty);
       });
   });
   test("GET:400 sends an appropriate status and error message when given an invalid id", () => {
@@ -67,8 +66,9 @@ describe("get/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
+        const { articles } = body;
         expect(
-          body.forEach((article) => {
+          articles.forEach((article) => {
             article.hasOwnProperty("article_id"),
               article.hasOwnProperty("title"),
               article.hasOwnProperty("topic"),
@@ -80,7 +80,7 @@ describe("get/api/articles", () => {
               article.hasOwnProperty("comment_count");
           })
         );
-        expect(body[0]).toMatchObject({
+        expect(articles[0]).toMatchObject({
           article_id: 3,
           title: "Eight pug gifs that remind me of mitch",
           topic: "mitch",
@@ -102,8 +102,9 @@ describe("get/api/articles/:article_id/comments", () => {
       .get("/api/articles/9/comments")
       .expect(200)
       .then(({ body }) => {
+        const { comments } = body;
         expect(
-          body.forEach((comment) => {
+          comments.forEach((comment) => {
             comment.hasOwnProperty("comment_id"),
               comment.hasOwnProperty("votes"),
               comment.hasOwnProperty("created_at"),
@@ -135,10 +136,11 @@ describe("post/api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then(({ body }) => {
-        body.forEach((comment) => {
-          expect(comment).hasOwnProperty("body");
-          expect(comment).hasOwnProperty("author");
-          expect(comment).hasOwnProperty("article_id");
+        const { comment } = body;
+        comment.forEach((com) => {
+          expect(com).hasOwnProperty("body");
+          expect(com).hasOwnProperty("author");
+          expect(com).hasOwnProperty("article_id");
         });
       });
   });
@@ -188,13 +190,14 @@ describe("Patch/api/articles/:article_id", () => {
       .send(newVote)
       .expect(200)
       .then(({ body }) => {
-        expect(body[0]).hasOwnProperty("article_img_url");
-        expect(body[0]).hasOwnProperty("author");
-        expect(body[0]).hasOwnProperty("body");
-        expect(body[0]).hasOwnProperty("created_at");
-        expect(body[0]).hasOwnProperty("title");
-        expect(body[0]).hasOwnProperty("topic");
-        expect(body[0].votes).toBe(50);
+        const { article } = body;
+        expect(article[0]).hasOwnProperty("article_img_url");
+        expect(article[0]).hasOwnProperty("author");
+        expect(article[0]).hasOwnProperty("body");
+        expect(article[0]).hasOwnProperty("created_at");
+        expect(article[0]).hasOwnProperty("title");
+        expect(article[0]).hasOwnProperty("topic");
+        expect(article[0].votes).toBe(50);
       });
   });
   test("POST:404 should respond with correct msg for un-found id", () => {
@@ -236,7 +239,8 @@ describe("get/api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toMatchObject([
+        const { users } = body;
+        expect(users).toMatchObject([
           {
             username: "butter_bridge",
             name: "jonny",
@@ -276,8 +280,9 @@ describe("get/api/articles(topic query)", () => {
       .query({ topic: "cats" })
       .expect(200)
       .then(({ body }) => {
+        const { articles } = body;
         expect(
-          body.forEach((article) => {
+          articles.forEach((article) => {
             article.hasOwnProperty("article_id");
             article.hasOwnProperty("title");
             article.hasOwnProperty("author");
@@ -285,7 +290,7 @@ describe("get/api/articles(topic query)", () => {
             article.hasOwnProperty("created_at");
             article.hasOwnProperty("votes");
             article.hasOwnProperty("article_img_url");
-            article.topic === "cats";
+            article.hasOwnProperty("topic", "cats");
           })
         );
       });
@@ -298,14 +303,15 @@ describe("get/api/articles/:article_id(comment_count)", () => {
       .get("/api/articles/9")
       .expect(200)
       .then(({ body }) => {
-        body[0].hasOwnProperty("article_id");
-        body[0].hasOwnProperty("title");
-        body[0].hasOwnProperty("author");
-        body[0].hasOwnProperty("body");
-        body[0].hasOwnProperty("created_at");
-        body[0].hasOwnProperty("votes");
-        body[0].hasOwnProperty("article_img_url");
-        expect(body[0].comment_count).toBe("2");
+        const { article } = body;
+        article[0].hasOwnProperty("article_id");
+        article[0].hasOwnProperty("title");
+        article[0].hasOwnProperty("author");
+        article[0].hasOwnProperty("body");
+        article[0].hasOwnProperty("created_at");
+        article[0].hasOwnProperty("votes");
+        article[0].hasOwnProperty("article_img_url");
+        expect(article[0].comment_count).toBe("2");
       });
   });
 });

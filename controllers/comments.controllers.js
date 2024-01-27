@@ -10,7 +10,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   fetchCommentsByArticleId(article_id)
     .then((response) => {
-      res.status(200).send(response);
+      res.status(200).send({ comments: response });
     })
     .catch(next);
 };
@@ -23,7 +23,7 @@ exports.postCommentOnArticle = (req, res, next) => {
   }
   insertCommentOnArticle(newComment, article_id)
     .then((response) => {
-      res.status(201).send(response);
+      res.status(201).send({ comment: response });
     })
     .catch(next);
 };
