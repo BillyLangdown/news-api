@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
 const endpointsData = require("../endpoints.json");
+const { forEach } = require("../db/data/test-data/articles");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -23,8 +24,10 @@ describe("get/api/topics", () => {
         const { topics } = body;
         expect(Array.isArray(topics)).toBe(true);
         expect(topics.length).toBe(3);
-        expect(topics[0].hasOwnProperty("slug")).toBe(true);
-        expect(topics[0].hasOwnProperty("description")).toBe(true);
+        topics.forEach((topic) => {
+          expect(topic.hasOwnProperty("slug")).toBe(true);
+          expect(topic.hasOwnProperty("description")).toBe(true);
+        });
       });
   });
 });
@@ -58,7 +61,7 @@ describe("get/api/articles/:id", () => {
         expect(article[0].hasOwnProperty("comment_count"));
       });
   });
-  test("should sends an appropriate status and error message when given an invalid id and return a 400 status code.", () => {
+  test("should respond with a 400 status code and a 'Bad request' error message if article id is invalid", () => {
     return request(app)
       .get("/api/articles/not-an-id")
       .expect(400)
@@ -94,7 +97,7 @@ describe("get/api/articles", () => {
           topic: "mitch",
           author: "icellusedkars",
           body: "some gifs",
-          created_at: "2020-11-03T09:12:00.000Z",
+          created_at: "2020-11-03T14:12:00.000Z",
           votes: 0,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -289,6 +292,7 @@ describe("get/api/articles(topic query)", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
+        expect(articles.length).not.toBe(0);
         expect(
           articles.forEach((article) => {
             article.hasOwnProperty("article_id");
