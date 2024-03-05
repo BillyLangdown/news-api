@@ -37,9 +37,13 @@ exports.patchArticleById = (req, res, next) => {
 exports.postArticle = (req, res, next) => {
   const newArticle = req.body;
 
-  console.log("hello");
-
-  if (!newArticle.author ?? true) {
+  if (
+    !newArticle.author ||
+    !newArticle.title ||
+    !newArticle.topic ||
+    !newArticle.article_img_url ||
+    !newArticle.body
+  ) {
     res.status(400).send({ msg: "Bad request" });
   }
 
