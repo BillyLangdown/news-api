@@ -79,6 +79,12 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "posts a comment object with corresponding article id",
+    "exampleRequest": 
+    {
+      "body": "This is the new comment on article 9",
+      "author": "butter_bridge"
+    }
+    ,
     "exampleResponse":      [
       {
         "comment_id": 19,
@@ -93,6 +99,10 @@
   },
   "PATCH /api/articles/:article_id": {
     "description": "updates an article by article id",
+    "exampleRequest": 
+    {
+      "inc_votes": 50 
+    },
     "exampleResponse":      [
       {
         "article_id": 1,
@@ -150,6 +160,31 @@
         "votes": 0,
         "article_img_url": "'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'",
         "comment_count": "'2'"
+      }
+    ]
+    
+  },
+  "POST /api/articles": {
+    "description": "adds a new article to articles",
+    "exampleRequest" : { 
+
+    "title": "This is a new article", 
+    "topic": "coding",
+    "author": "rogersop",
+    "body": "An article to show what a new article will look like",
+    "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    },
+    "exampleResponse":     [
+      {
+        "article_id": 10,
+        "title": "This is a new article",
+        "topic": "coding",
+        "author": "rogersop",
+        "body": "An article to show what a new article will look like",
+       " created_at": "2020-08-03T19:14:00.000Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count": "0"
       }
     ]
     
