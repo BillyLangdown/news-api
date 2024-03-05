@@ -40,33 +40,6 @@ exports.fetchArticles = (query) => {
   });
 };
 
-//   if (query) {
-//     return db
-//       .query(
-//         `SELECT articles.*, COUNT(comments.article_id) AS comment_count
-//       FROM articles
-//       JOIN comments ON articles.article_id = comments.article_id
-//       WHERE topic = $1
-//       GROUP BY articles.article_id
-//       ORDER BY articles.created_at DESC;`,
-//         [query]
-//       )
-//       .then(({ rows }) => {
-//         return rows;
-//       });
-//   }
-//   return db
-//     .query(
-//       `SELECT articles.*, COUNT(comments.article_id) AS comment_count
-//       FROM articles
-//       JOIN comments ON articles.article_id = comments.article_id
-//       GROUP BY articles.article_id
-//       ORDER BY articles.created_at DESC;`
-//     )
-//     .then(({ rows }) => {
-//       return rows;
-//     });
-
 exports.updateArticleById = (inc_votes, article_id) => {
   return db
     .query(
@@ -81,5 +54,20 @@ exports.updateArticleById = (inc_votes, article_id) => {
         });
       }
       return rows;
+    });
+};
+
+exports.insertNewArticle = (newArticle) => {
+  const { title, topic, author, body, article_img_url } = newArticle;
+  return db
+    .query(
+      `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES ($1, $2, $3, $4, NOW(), $5, $6) RETURNING *;`,
+      [title, topic, author, body, 0, article_img_url]
+    )
+    .then((data) => {
+      return data.rows;
+    })
+    .catch((error) => {
+      throw error;
     });
 };

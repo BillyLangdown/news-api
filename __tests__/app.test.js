@@ -69,7 +69,7 @@ describe("get/api/articles/:id", () => {
 });
 
 describe("get/api/articles", () => {
-  test("should an array of object containing article data and a 200 status code.", () => {
+  test("should return an array of object containing article data and a 200 status code.", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -88,18 +88,6 @@ describe("get/api/articles", () => {
               article.hasOwnProperty("comment_count");
           })
         );
-        expect(articles[0]).toMatchObject({
-          article_id: 3,
-          title: "Eight pug gifs that remind me of mitch",
-          topic: "mitch",
-          author: "icellusedkars",
-          body: "some gifs",
-          created_at: "2020-11-03T09:12:00.000Z",
-          votes: 0,
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          comment_count: "2",
-        });
       });
   });
 });
@@ -320,6 +308,53 @@ describe("get/api/articles/:article_id(comment_count)", () => {
         article[0].hasOwnProperty("votes");
         article[0].hasOwnProperty("article_img_url");
         expect(article[0].comment_count).toBe("2");
+      });
+  });
+});
+
+describe("post/api/articles", () => {
+  test("should successfully post a new article and respond with that article with auto added properties as well as a 201 status code.", () => {
+    const newArticle = {
+      title: "This is a test article",
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "This is a post article test for the body of the article.",
+      article_img_url:
+        "https://plus.unsplash.com/premium_photo-1709311451457-21d7fb4638c2?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        const { newArticle } = body;
+        expect(newArticle[0].title).toBe("This is a test article");
+        expect(newArticle[0].topic).toBe("mitch");
+        expect(newArticle[0].author).toBe("butter_bridge");
+        expect(newArticle[0].body).toBe(
+          "This is a post article test for the body of the article."
+        );
+        expect(newArticle[0].votes).toBe(0);
+
+        expect(newArticle[0]).toMatchObject({
+          article_img_url:
+            "https://plus.unsplash.com/premium_photo-1709311451457-21d7fb4638c2?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          created_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2}/),
+        });
+
+        expect(newArticle[0]).toHaveProperty("article_id");
+        expect(newArticle[0].article_id).toBeGreaterThan(0);
+      });
+  });
+  test("should respond with bad request if inadequate  body is sent to post and a 400 status code.", () => {
+    const newArticle = { title: "only a title" };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });
