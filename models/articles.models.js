@@ -24,17 +24,21 @@ exports.fetchArticleById = (article_id) => {
 exports.fetchArticles = (query) => {
   let queryValues = [];
   let queryStr = `
-  SELECT articles.*, COUNT(comments.article_id) AS comment_count
-  FROM articles
-  JOIN comments ON articles.article_id = comments.article_id
+    SELECT
+      articles.*,
+      COALESCE(COUNT(comments.article_id), 0) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id
   `;
 
-  if (query !== undefined) {
-    queryValues.push(query);
+  if (query && query.topic) {
+    queryValues.push(query.topic);
     queryStr += `WHERE articles.topic = $1 `;
   }
+
   queryStr += `GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC;`;
+               ORDER BY articles.created_at DESC;`;
+
   return db.query(queryStr, queryValues).then(({ rows }) => {
     return rows;
   });
@@ -61,7 +65,8 @@ exports.insertNewArticle = (newArticle) => {
   const { title, topic, author, body, article_img_url } = newArticle;
   return db
     .query(
-      `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES ($1, $2, $3, $4, NOW(), $5, $6) RETURNING *;`,
+      `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) 
+    VALUES ($1, $2, $3, $4, NOW(), $5, $6) RETURNING *;`,
       [title, topic, author, body, 0, article_img_url]
     )
     .then((data) => {
