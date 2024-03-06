@@ -104,7 +104,6 @@ describe("get/api/articles", () => {
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           comment_count: "2",
         });
-
       });
   });
 });
@@ -346,6 +345,7 @@ describe("post/api/articles", () => {
       .expect(201)
       .then(({ body }) => {
         const { newArticle } = body;
+
         expect(newArticle[0].title).toBe("This is a test article");
         expect(newArticle[0].topic).toBe("mitch");
         expect(newArticle[0].author).toBe("butter_bridge");
