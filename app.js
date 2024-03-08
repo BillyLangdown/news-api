@@ -8,6 +8,7 @@ const {
   getArticles,
   patchArticleById,
   postArticle,
+  deleteArticleById,
 } = require("./controllers/articles.controllers");
 const {
   getCommentsByArticleId,
@@ -40,6 +41,8 @@ app.delete("/api/comments/:comment_id", deleteCommentById);
 app.get("/api/users", getUsers);
 
 app.post("/api/articles", postArticle);
+
+app.delete("/api/articles/:article_id", deleteArticleById);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {

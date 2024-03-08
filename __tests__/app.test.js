@@ -376,3 +376,15 @@ describe("post/api/articles", () => {
       });
   });
 });
+
+describe("delete/api/articles/:article_id", () => {
+  test("should give no response, delete article with given id and return a 204 status code.", () => {
+    return request(app).delete("/api/articles/2").expect(204);
+  });
+  test("should give correct msg if id is un-found and return a 404 status code", () => {
+    return request(app).delete("/api/articles/999").expect(404);
+  });
+  test("should give correct msg if id is invalid and return a 400 status code.", () => {
+    return request(app).delete("/api/articles/donkey").expect(400);
+  });
+});
