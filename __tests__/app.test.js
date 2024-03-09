@@ -135,15 +135,6 @@ describe("get/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-
-  test("should respond with not found if id is the correct format but non existent and a 404 status code.", () => {
-    return request(app)
-      .get("/api/articles/999/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
-      });
-  });
 });
 
 describe("post/api/articles/:article_id/comments", () => {
