@@ -7,10 +7,10 @@ exports.fetchCommentsByArticleId = (article_id) => {
       [article_id]
     )
     .then(({ rows }) => {
-      if (!rows[0]) {
+      if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `No user found for user_id: ${user_id}`,
+          msg: `Not found`,
         });
       }
       return rows;

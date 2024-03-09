@@ -8,6 +8,9 @@ const {
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
 
+  if (isNaN(Number(article_id))) {
+    res.status(400).send({ msg: "Bad request" });
+  }
   fetchCommentsByArticleId(article_id)
     .then((response) => {
       res.status(200).send({ comments: response });
@@ -30,6 +33,9 @@ exports.postCommentOnArticle = (req, res, next) => {
 
 exports.deleteCommentById = (req, res, next) => {
   const { comment_id } = req.params;
+  if (isNaN(Number(comment_id))) {
+    res.status(400).send({ msg: "Bad request" });
+  }
   removeCommentById(comment_id)
     .then(() => {
       res.status(204).send();
