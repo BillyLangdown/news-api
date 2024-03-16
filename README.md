@@ -4,6 +4,8 @@
 
 This repository contains an API that interacts with application data programmatically. The API will be used to provide information for the front-end architecture in a future repository.
 
+Interact with the API here: https://nc-news-api-vw2o.onrender.com
+
 ## Getting Started
 
 Follow the steps below to set up the project on your local machine.
