@@ -85,7 +85,6 @@ exports.removeArticleById = (article_id) => {
       article_id,
     ])
     .then(({ rows }) => {
-      console.log(article_id);
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
