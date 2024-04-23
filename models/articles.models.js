@@ -22,7 +22,6 @@ exports.fetchArticleById = (article_id) => {
       return rows;
     });
 };
-
 exports.fetchArticles = (query) => {
   let queryValues = [];
   let queryStr = `
@@ -33,12 +32,12 @@ exports.fetchArticles = (query) => {
     LEFT JOIN comments ON articles.article_id = comments.article_id
   `;
 
-  if (query && query.topic) {
-    queryValues.push(query.topic);
-    queryStr += `WHERE articles.topic = $1 `;
+  if (query) {
+    queryValues.push(query);
+    queryStr += ` WHERE articles.topic = $1 `;
   }
 
-  queryStr += `GROUP BY articles.article_id
+  queryStr += ` GROUP BY articles.article_id
                ORDER BY articles.created_at DESC;`;
 
   return db.query(queryStr, queryValues).then(({ rows }) => {
